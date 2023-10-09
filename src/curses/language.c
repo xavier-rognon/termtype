@@ -77,5 +77,7 @@ language_t *language_init(void)
     language->language = my_strcat("󰇧 ", language->language_list[language->current_language]);
     language->start_showing = 0;
     language->language_highlight = 0;
+    language->search_offset = 0;
     return language;
 }
+

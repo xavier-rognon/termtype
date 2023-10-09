@@ -6,8 +6,7 @@
 */
 
 #include "../../include/include.h"
-#include <curses.h>
-#include <unistd.h>
+#include <stdio.h>
 
 void init_top_bar(ui_t *ui)
 {
@@ -72,22 +71,38 @@ void display_top_bar(ui_t *ui)
     wrefresh(ui->top_bar);
 }
 
+void clean_language_menu(ui_t *ui)
+{
+    char *clean_line = malloc(sizeof(char) * 47);
+
+    clean_line = memset(clean_line, ' ', 46);
+    clean_line[46] = 0;
+    for (int i = 0; i < ui->row - 4; i++)
+        mvwprintw(ui->language->language_menu, i + 3, 2, "%s", clean_line);
+    free(clean_line);
+}
+
 void display_language(ui_t *ui)
 {
+    int i_2 = 0;
+
     if (ui->menu == LANGUAGE_BUTTON)
         attron(A_REVERSE);
     mvprintw(ui->row / 2 - 4, (ui->col - strlen(ui->language->language)) / 2, "%s", ui->language->language);
     attroff(A_REVERSE);
     if (ui->menu == LANGUAGE_MENU) {
         box(ui->language->language_menu, 0, 0);
-        for (int i = ui->language->start_showing + 2; i < ui->row - 2 + ui->language->start_showing &&
-        ui->language->language_list[i] != NULL; i++) {
+        clean_language_menu(ui);
+        for (int i = ui->language->start_showing + ui->language->search_offset;
+        i < ui->row - 4 + ui->language->start_showing + ui->language->search_offset &&
+        ui->language->language_list[i] != NULL; i++, i_2++) {
             if (i == ui->language->current_language)
                 wattron(ui->language->language_menu, COLOR_PAIR(3));
             if (i == ui->language->language_highlight)
                 wattron(ui->language->language_menu, A_REVERSE);
-            if (strlen(ui->language->search) == 0 || strncmp(ui->language->language_list[i], ui->language->search, strlen(ui->language->search)) != 0)
-                mvwprintw(ui->language->language_menu, i - ui->language->start_showing + 1, 2, "%s", ui->language->language_list[i]);
+            if (strncmp(ui->language->language_list[i],
+                        ui->language->search, strlen(ui->language->search)) == 0)
+                mvwprintw(ui->language->language_menu, i_2 + 3, 2, "%s", ui->language->language_list[i]);
             wattroff(ui->language->language_menu, A_REVERSE);
             wattroff(ui->language->language_menu, COLOR_PAIR(3));
         }

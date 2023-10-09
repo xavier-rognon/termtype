@@ -6,6 +6,7 @@
 */
 
 #include "../../include/include.h"
+#include <stdio.h>
 
 void input_top_bar(ui_t *ui, player_t *player, int input)
 {
@@ -33,23 +34,48 @@ void input_language_button(ui_t *ui, player_t *player, int input)
         ui->menu = START_BUTTON;
 }
 
+void update_offset(ui_t *ui)
+{
+    ui->language->search_offset = 0;
+    ui->language->start_showing = 0;
+
+    if (strlen(ui->language->search) == 0)
+        return;
+    for(int i = 0; strncmp(ui->language->language_list[i], ui->language->search,
+                           strlen(ui->language->search)) != 0;
+        i++, ui->language->search_offset++)
+        if (ui->language->language_list[i] == NULL)
+            break;
+    ui->language->language_highlight = ui->language->search_offset;
+}
+
 void input_language_menu(ui_t *ui, player_t *player, int input)
 {
-    player = player;
     char input_str[2] = {input, 0};
+
+    player = player;
     if (input == KEY_DOWN && ui->language->language_list[ui->language->language_highlight] != NULL) {
-        if (ui->language->language_highlight - ui->language->start_showing <
-            ui->row - 3)
+        if (ui->language->language_list[ui->language->language_highlight + 1] == NULL)
+            return;
+        if (ui->language->language_highlight - ui->language->start_showing - ui->language->search_offset < ui->row - 5 &&
+            (strncmp(ui->language->language_list[ui->language->language_highlight + 1], ui->language->search,
+                     strlen(ui->language->search)) == 0 || strlen(ui->language->search) == 0))
             ui->language->language_highlight++;
-        else {
-            ui->language->language_highlight++;
-            ui->language->start_showing++;
-        }
+        else if (strncmp(ui->language->language_list[ui->language->language_highlight + 1], ui->language->search,
+                         strlen(ui->language->search)) == 0 || strlen(ui->language->search) == 0){
+        ui->language->language_highlight++;
+        ui->language->start_showing++;
+    }
     }
     if (input == KEY_UP && ui->language->language_highlight > 0) {
-        if (ui->language->language_highlight != ui->language->start_showing)
+        if (ui->language->language_highlight - 1 == -1)
+            return;
+        if (ui->language->language_highlight != ui->language->start_showing + ui->language->search_offset &&
+            strncmp(ui->language->language_list[ui->language->language_highlight - 1], ui->language->search,
+                    strlen(ui->language->search)) == 0)
             ui->language->language_highlight--;
-        else {
+        else if (strncmp(ui->language->language_list[ui->language->language_highlight - 1], ui->language->search,
+                         strlen(ui->language->search)) == 0 || strlen(ui->language->search) == 0){
             ui->language->language_highlight--;
             ui->language->start_showing--;
         }
@@ -62,15 +88,20 @@ void input_language_menu(ui_t *ui, player_t *player, int input)
         ui->language->language = my_strcat("󰇧 ", ui->language->language_list[ui->language->current_language]);
         free_array(ui->sentence_arr);
         cut_sentence_for_display(ui, ui->parser->sentence);
+        return;
     }
     if (input == 27) {
         ui->menu = LANGUAGE_BUTTON;
         ui->language->search = "\0";
     }
-    if (input == 263 && strlen(ui->language->search) != 0)
+    if (input == 263 && strlen(ui->language->search) != 0) {
         ui->language->search[strlen(ui->language->search) - 1] = 0;
-    if (my_char_isalphanum(input) == true)
+        update_offset(ui);
+    }
+    if (my_char_isprintable(input) == true && input != '\n') {
         ui->language->search = my_strcat(ui->language->search, input_str);
+        update_offset(ui);
+    }
 }
 
 void input_start_button(ui_t *ui, player_t *player, int input)

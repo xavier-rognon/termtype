@@ -40,5 +40,6 @@ char *my_strcat(char *str1, char *str2);
 char *my_strcpy(char *dest, char *src);
 char **my_realloc(char **array, int lenght);
 bool my_char_isalphanum(char c);
+bool my_char_isprintable(char str);
 
 #endif /* !INCLUDE_H_ */

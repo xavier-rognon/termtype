@@ -48,6 +48,7 @@ typedef struct language_s {
     int language_highlight;
     int current_language;
     int start_showing;
+    int search_offset;
 }language_t;
 
 typedef struct ui_s {

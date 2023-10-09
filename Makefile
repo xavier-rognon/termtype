@@ -27,7 +27,7 @@ SRC		=	./src/main.c													\
 				./src/utils/my_strcat.c								\
 				./src/utils/my_strcpy.c								\
 				./src/utils/my_realloc.c							\
-				./src/utils/my_str_isalphanum.c				\
+				./src/utils/my_char_isprintable.c			\
 
 OBJ		=	$(SRC:.c=.o)
 
