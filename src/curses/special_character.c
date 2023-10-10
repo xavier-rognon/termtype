@@ -10,7 +10,7 @@
 
 void check_special_character(int row, int col, char to_check)
 {
-    mvprintw(0, 0, "%d", to_check);
+    //mvprintw(0, 0, "%d", to_check);
     switch (to_check) {
         case -71:
             mvprintw(row, col, "ù");
@@ -20,6 +20,9 @@ void check_special_character(int row, int col, char to_check)
             break;
         case -81:
             mvprintw(row, col, "ï");
+            break;
+        case -82:
+            mvprintw(row, col, "î");
             break;
         case -86:
             mvprintw(row, col, "ê");

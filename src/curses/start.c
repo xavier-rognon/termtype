@@ -19,7 +19,7 @@ void init_top_bar(ui_t *ui)
 void init_language_menu(ui_t *ui)
 {
     ui->language->language_menu = newwin(ui->row, 50, 0, (ui->col - 50) / 2);
-    ui->language->search = "\0";
+    ui->language->search = strdup("\0");
     waddch(ui->language->language_menu, '|');
     box(ui->language->language_menu, 0, 0);
     keypad(ui->language->language_menu, true);
@@ -114,14 +114,14 @@ void display_language(ui_t *ui)
 
 void start(player_t *player, ui_t *ui)
 {
-    char info[77] = "to exit press q, you can navigate inside of the menus with the arrow keys.";
+    char info[85] = "to exit press esc then q, you can navigate inside of the menus with the arrow keys.";
     char info_2[26] = "press tab to change menu.";
     char start[18] = " 󰐊 start test \0";
 
     if (player->state != START)
         return;
     print_sentence(player, ui);
-    mvprintw(ui->row / 5 * 4, (ui->col - 74) / 2, "%s", info);
+    mvprintw(ui->row / 5 * 4, (ui->col - 83) / 2, "%s", info);
     mvprintw(ui->row / 5 * 4 + 1, (ui->col - 26) / 2, "%s", info_2);
     if (ui->menu == START_BUTTON)
         attron(A_REVERSE);

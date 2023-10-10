@@ -18,6 +18,7 @@ void player_reset_test(player_t *player, parser_t *parser)
     player->current_row[1] = 1;
     player->current_row[2] = 2;
     player->offset = 0;
+    player->offset_current_line = 0;
     player->wrong_input = malloc(sizeof(char) * strlen(parser->sentence));
     player->correct_input = malloc(sizeof(char) * strlen(parser->sentence));
     player->wrong_input = memset(player->wrong_input, 0, strlen(parser->sentence) - 1);
@@ -30,6 +31,7 @@ player_t *player_init(parser_t *parser)
 
     player->lenght_input = 0;
     player->offset = 0;
+    player->offset_current_line = 0;
     player->start_showing_player_input = 0;
     player->current_line = 1;
     player->last_input = 0;

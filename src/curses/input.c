@@ -44,7 +44,7 @@ void update_offset(ui_t *ui)
     for(int i = 0; strncmp(ui->language->language_list[i], ui->language->search,
                            strlen(ui->language->search)) != 0;
         i++, ui->language->search_offset++)
-        if (ui->language->language_list[i] == NULL)
+        if (ui->language->language_list[i + 1] == NULL)
             break;
     ui->language->language_highlight = ui->language->search_offset;
 }
@@ -92,6 +92,7 @@ void input_language_menu(ui_t *ui, player_t *player, int input)
     }
     if (input == 27) {
         ui->menu = LANGUAGE_BUTTON;
+        input = 0;
         ui->language->search = "\0";
     }
     if (input == 263 && strlen(ui->language->search) != 0) {
@@ -125,7 +126,7 @@ void analyze_input(ui_t *ui, player_t *player)
     void (*input_menu[4])(ui_t *, player_t *, int) = {&input_top_bar, &input_language_button,
     &input_language_menu, &input_start_button};
 
-    if (input == 'q' && ui->menu != LANGUAGE_MENU)
+    if (input == 27 && ui->menu != LANGUAGE_MENU)
         ui->exit = true;
     input_menu[ui->menu](ui, player, input);
 }

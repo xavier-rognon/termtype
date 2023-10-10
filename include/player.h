@@ -24,6 +24,7 @@
         int state;
         int playtime;
         int offset;
+        int offset_current_line;
     }player_t;
 
 player_t *player_init(parser_t *parser);
