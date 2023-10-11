@@ -25,7 +25,7 @@ int longest_word_in_array(char **array)
     return longest;
 }
 
-char *get_sentence(char *content)
+char *get_sentence(char *content, int nb_word)
 {
     char *words = strstr(content, "[");
     char **word_array = my_str_to_word_array(words, " ,[]]}\n\"\t");
@@ -35,7 +35,7 @@ char *get_sentence(char *content)
     char *temp;
     char *temp_word = malloc(sizeof(char) * (longest_word_in_array(word_array) + 1));
 
-    for (int i = 0; i < 350; i++) {
+    for (int i = 0; i < nb_word; i++) {
         temp = sentence;
         sentence = my_strcat(sentence, " ");
         free(temp);
@@ -51,7 +51,7 @@ char *get_sentence(char *content)
     return sentence;
 }
 
-parser_t *parser_language(char *path)
+parser_t *parser_language(char *path, int nb_word)
 {
     parser_t *parser = malloc(sizeof(parser_t));
     int fd = open(path, O_RDONLY);
@@ -65,7 +65,7 @@ parser_t *parser_language(char *path)
     read(fd, content, s.st_size);
     content[s.st_size] = 0;
     parser->name = get_name(content);
-    parser->sentence = get_sentence(content);
+    parser->sentence = get_sentence(content, nb_word);
     close(fd);
     fprintf(stderr, "\n");
     return parser;

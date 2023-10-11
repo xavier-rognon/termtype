@@ -62,6 +62,7 @@ typedef struct ui_s {
     int gamemode;
     int variant;
     int menu;
+    int lenght;
     char **sentence_arr;
     language_t *language;
     parser_t *parser;

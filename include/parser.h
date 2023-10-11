@@ -5,7 +5,6 @@
 ** parser
 */
 
-
 #ifndef PARSER_H_
     #define PARSER_H_
 
@@ -16,6 +15,7 @@ typedef struct parser_s {
     char *sentence;
 }parser_t;
 
-parser_t *parser_language(char *path);
+parser_t *parser_language(char *path, int nb_word);
 void free_parser(parser_t *parser);
+
 #endif /* PARSER_H_ */

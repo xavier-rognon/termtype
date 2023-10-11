@@ -34,6 +34,7 @@ ui_t *init_ui(void)
     ui->top_bar_option[2] = my_str_to_word_array("    S    ,    M    ,    L    ,    XL    ", ",");
     ui->top_bar_option[3] = NULL;
     ui->top_bar_highlight = 0;
+    ui->lenght = 350;
     ui->gamemode = TIME;
     ui->variant = M;
     ui->menu = TOP_BAR;
@@ -82,7 +83,7 @@ void my_curses(void)
     ui = init_ui();
     init_language_menu(ui);
     init_top_bar(ui);
-    ui->parser = parser_language("./asset/languages/english.json");
+    ui->parser = parser_language("./asset/languages/english.json", 350);
     player = player_init(ui->parser);
     cut_sentence_for_display(ui, ui->parser->sentence);
     player->cursor_pos[0] = ui->row / 2 - 1;

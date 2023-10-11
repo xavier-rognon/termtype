@@ -84,7 +84,7 @@ void input_language_menu(ui_t *ui, player_t *player, int input)
         ui->language->current_language = ui->language->language_highlight;
         free_parser(ui->parser);
         ui->parser = parser_language(my_strcat("./asset/languages/",
-                                               ui->language->language_list_json[ui->language->current_language]));
+                                               ui->language->language_list_json[ui->language->current_language]), ui->lenght);
         ui->language->language = my_strcat("󰇧 ", ui->language->language_list[ui->language->current_language]);
         free_array(ui->sentence_arr);
         cut_sentence_for_display(ui, ui->parser->sentence);
@@ -114,7 +114,8 @@ void input_start_button(ui_t *ui, player_t *player, int input)
         player->last_input = 0;
         curs_set(1);
         player->cursor_pos[1] = (ui->col - strlen(ui->sentence_arr[0])) / 2;
-        alarm(player->playtime);
+        if (ui->gamemode == TIME)
+            alarm(player->playtime);
     }
     if (input == '\t')
         ui->menu = TOP_BAR;
