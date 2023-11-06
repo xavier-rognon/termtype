@@ -15,6 +15,7 @@
 #include <dirent.h>
 #include <signal.h>
 #include <time.h>
+#include <math.h>
 #include <locale.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -29,6 +30,8 @@ extern int check_alarm_g;
 #ifndef INCLUDE_H_
     #define INCLUDE_H_
 
+    #define DEBUG(...) fprintf(stderr, __VA_ARGS__);
+
 void exit_with_message(char *message, int code);
 int my_strlen_til_c(char *str, char c);
 char **my_str_to_word_array(char *str, char *limiter);
@@ -41,5 +44,7 @@ char *my_strcpy(char *dest, char *src);
 char **my_realloc(char **array, int lenght);
 bool my_char_isalphanum(char c);
 bool my_char_isprintable(char str);
+int my_find_digits(int nb);
+void clear_window(WINDOW *window);
 
 #endif /* !INCLUDE_H_ */

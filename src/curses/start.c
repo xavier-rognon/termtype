@@ -78,7 +78,7 @@ void clean_language_menu(ui_t *ui)
     clean_line = memset(clean_line, ' ', 46);
     clean_line[46] = 0;
     for (int i = 0; i < ui->row - 4; i++)
-        mvwprintw(ui->language->language_menu, i + 3, 2, "%s", clean_line);
+        mvwprintw(ui->language->language_menu, i + 1, 2, "%s", clean_line);
     free(clean_line);
 }
 
@@ -107,6 +107,8 @@ void display_language(ui_t *ui)
             wattroff(ui->language->language_menu, COLOR_PAIR(3));
         }
         mvwprintw(ui->language->language_menu, 1, 2, "> %s| ", ui->language->search);
+        for (int i = 0; i < 48; i++)
+            mvwprintw(ui->language->language_menu, 2, 1 + i, "—");
         refresh();
         wrefresh(ui->language->language_menu);
     }
@@ -114,14 +116,14 @@ void display_language(ui_t *ui)
 
 void start(player_t *player, ui_t *ui)
 {
-    char info[85] = "to exit press esc then q, you can navigate inside of the menus with the arrow keys.";
+    char info[94] = "to exit press esc then wait a bit, you can navigate inside of the menus with the arrow keys.";
     char info_2[26] = "press tab to change menu.";
     char start[18] = " 󰐊 start test \0";
 
     if (player->state != START)
         return;
     print_sentence(player, ui);
-    mvprintw(ui->row / 5 * 4, (ui->col - 83) / 2, "%s", info);
+    mvprintw(ui->row / 5 * 4, (ui->col - 94) / 2, "%s", info);
     mvprintw(ui->row / 5 * 4 + 1, (ui->col - 26) / 2, "%s", info_2);
     if (ui->menu == START_BUTTON)
         attron(A_REVERSE);

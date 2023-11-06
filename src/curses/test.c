@@ -12,13 +12,18 @@
 
 void reset_test(player_t *player, ui_t *ui)
 {
-    player->state = START;
+    clear_window(stdscr);
+    clear_window(ui->result->graph);
+    player->state = RESULT;
+    refresh();
+    ui->result->data[WPM_MAX] = get_max_wpm(ui->result, player->lenght_input);
     free_parser(ui->parser);
     ui->parser = parser_language(my_strcat("./asset/languages/",
                                            ui->language->language_list_json[ui->language->current_language]), ui->lenght);
     free_array(ui->sentence_arr);
     cut_sentence_for_display(ui, ui->parser->sentence);
     player_reset_test(player, ui->parser);
+    refresh();
     curs_set(0);
 }
 
@@ -48,19 +53,34 @@ void check_input(player_t *player, ui_t *ui)
             return;
         player->cursor_pos[1]--;
         player->lenght_input--;
+        if (player->wrong_input[player->lenght_input] != 0)
+            ui->result->data[INCORRECT]--;
         if (player->correct_input[player->lenght_input] < 0 || player->wrong_input[player->lenght_input] < 0)
             player->offset_current_line--;
+        if (player->correct_input[player->lenght_input] == ' ') {
+            ui->result->current_word--;
+        }
         player->correct_input[player->lenght_input] = 0;
         player->wrong_input[player->lenght_input] = 0;
         return;
     }
-    if (player->last_input == ui->parser->sentence[player->lenght_input + player->offset + player->offset_current_line])
+    if (player->last_input == ui->parser->sentence[player->lenght_input + player->offset + player->offset_current_line]) {
         player->correct_input[player->lenght_input] = ui->parser->sentence[player->lenght_input + player->offset + player->offset_current_line];
-    else {
+        if (player->correct_input[player->lenght_input] == ' ') {
+            ui->result->time_upto_word[ui->result->current_word] = get_time_millisecond() - ui->result->time_start_test;
+            ui->result->wpm_raw_per_word[ui->result->current_word] =
+                get_raw_wpm(ui->result, player->lenght_input);
+            ui->result->wpm_per_word[ui->result->current_word] =
+                get_wpm(ui->result, player->lenght_input);
+            ui->result->current_word++;
+        }
+    } else {
         if (player->last_input != ' ')
             player->wrong_input[player->lenght_input] = player->last_input;
         else
             player->wrong_input[player->lenght_input] = '_';
+        ui->result->data[NB_ERRORS]++;
+        ui->result->data[INCORRECT]++;
     }
     player->lenght_input++;
     if (check_end_of_line(player, ui->sentence_arr, ui->col, ui) == false)
@@ -109,3 +129,4 @@ void test_game(player_t *player, ui_t *ui)
     check_input(player, ui);
     end_of_timer(player, ui);
 }
+

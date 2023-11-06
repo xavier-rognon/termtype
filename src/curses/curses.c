@@ -85,6 +85,7 @@ void my_curses(void)
     init_top_bar(ui);
     ui->parser = parser_language("./asset/languages/english.json", 350);
     player = player_init(ui->parser);
+    ui->result = init_result(ui->parser->nb_word, ui->col, ui->row);
     cut_sentence_for_display(ui, ui->parser->sentence);
     player->cursor_pos[0] = ui->row / 2 - 1;
     player->cursor_pos[1] = (ui->col - strlen(ui->sentence_arr[0])) / 2;
@@ -93,6 +94,7 @@ void my_curses(void)
         clear();
         start(player, ui);
         test_game(player, ui);
+        display_result(ui, player);
     }
     endwin();
     free_ui(ui);

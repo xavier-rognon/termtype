@@ -55,18 +55,19 @@ parser_t *parser_language(char *path, int nb_word)
 {
     parser_t *parser = malloc(sizeof(parser_t));
     int fd = open(path, O_RDONLY);
+    struct stat s;
+
     if (fd == -1)
         exit_with_message("file not found", 84);
-
-    struct stat s;
     stat(path, &s);
 
     char content[s.st_size + 1];
+    parser->nb_word = nb_word;
     read(fd, content, s.st_size);
     content[s.st_size] = 0;
     parser->name = get_name(content);
     parser->sentence = get_sentence(content, nb_word);
     close(fd);
-    fprintf(stderr, "\n");
     return parser;
 }
+

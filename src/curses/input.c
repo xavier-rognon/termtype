@@ -6,7 +6,6 @@
 */
 
 #include "../../include/include.h"
-#include <stdio.h>
 
 void input_top_bar(ui_t *ui, player_t *player, int input)
 {
@@ -15,8 +14,10 @@ void input_top_bar(ui_t *ui, player_t *player, int input)
         ui->top_bar_highlight--;
     if (ui->top_bar_highlight != 6 && input == KEY_RIGHT)
         ui->top_bar_highlight++;
-    if (input == '\n' && ui->top_bar_highlight < 3)
+    if (input == '\n' && ui->top_bar_highlight < 3) {
         ui->gamemode = ui->top_bar_highlight;
+        manage_variant(ui, player);
+    }
     if (input == '\n' && ui->top_bar_highlight >= 3) {
         ui->variant = ui->top_bar_highlight - 3;
         manage_variant(ui, player);
@@ -111,6 +112,8 @@ void input_start_button(ui_t *ui, player_t *player, int input)
         clear();
         refresh();
         player->state = TEST;
+        ui->result->time_start_test = get_time_millisecond();
+        ui->result->time_start_word = get_time_millisecond();
         player->last_input = 0;
         curs_set(1);
         player->cursor_pos[1] = (ui->col - strlen(ui->sentence_arr[0])) / 2;

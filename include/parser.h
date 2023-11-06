@@ -13,6 +13,7 @@
 typedef struct parser_s {
     char *name;
     char *sentence;
+    int nb_word;
 }parser_t;
 
 parser_t *parser_language(char *path, int nb_word);
