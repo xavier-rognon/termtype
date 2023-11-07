@@ -23,17 +23,17 @@ SRC		=	./src/main.c													\
 			./src/curses/result/graph/place_point.c							\
 			./src/player/free_player.c										\
 			./src/player/player_init.c										\
-			./src/utils/strlen_til_c.c										\
-			./src/utils/exit_with_message.c									\
-			./src/utils/my_str_to_word_array.c								\
-			./src/utils/my_arrlen.c											\
-			./src/utils/free_array.c										\
-			./src/utils/my_strcat.c											\
-			./src/utils/my_strcpy.c											\
-			./src/utils/my_realloc.c										\
-			./src/utils/my_char_isprintable.c								\
-			./src/utils/my_find_digits.c									\
-			./src/utils/clear_window.c										\
+			./src/utils/general/strlen_til_c.c								\
+			./src/utils/general/exit_with_message.c							\
+			./src/utils/general/my_str_to_word_array.c						\
+			./src/utils/general/my_arrlen.c									\
+			./src/utils/general/free_array.c								\
+			./src/utils/general/my_strcat.c									\
+			./src/utils/general/my_strcpy.c									\
+			./src/utils/general/my_realloc.c								\
+			./src/utils/general/my_char_isprintable.c						\
+			./src/utils/general/my_find_digits.c							\
+			./src/utils/ncurses/clear_window.c								\
 
 OBJ		=	$(SRC:.c=.o)
 

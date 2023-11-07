@@ -5,7 +5,7 @@
 ** my_str_to_word_array
 */
 
-#include "../../include/include.h"
+#include "../../../include/include.h"
 
 bool my_is_in_str(char *str, char a)
 {

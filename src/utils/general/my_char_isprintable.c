@@ -5,7 +5,7 @@
 ** my_char_isalphanum
 */
 
-#include "../../include/include.h"
+#include "../../../include/include.h"
 
 bool my_char_isprintable(char c)
 {

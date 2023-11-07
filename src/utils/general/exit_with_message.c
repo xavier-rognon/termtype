@@ -5,8 +5,7 @@
 ** exit_with_message
 */
 
-#include "../../include/include.h"
-#include <stdio.h>
+#include "../../../include/include.h"
 
 void exit_with_message(char *message, int code)
 {

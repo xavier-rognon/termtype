@@ -5,7 +5,7 @@
 ** clear_window
 */
 
-#include "../../include/include.h"
+#include "../../../include/include.h"
 #include <curses.h>
 
 void clear_window(WINDOW *window)
