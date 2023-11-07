@@ -18,7 +18,7 @@ result_t *init_result(int sentence_length, int col, int row)
     result->current_word = 0;
     result->data[NB_ERRORS] = 0;
     result->data[INCORRECT] = 0;
-    result->graph = newwin(row / 3, col / 2, row / 3, col / 4);
+    result->graph = newwin(row / 3, col / 2, row / 3, col / 4 + col / 16);
     box(result->graph, 0, 0);
     keypad(result->graph, true);
     return result;

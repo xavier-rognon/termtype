@@ -6,9 +6,10 @@
 ##
 
 SRC		=	./src/main.c													\
+\
 			./src/parser/parser_language.c									\
 			./src/parser/free_parser.c										\
-			./src/debug/my_show_word_array.c								\
+\
 			./src/curses/curses.c											\
 			./src/curses/start.c											\
 			./src/curses/test.c												\
@@ -17,12 +18,15 @@ SRC		=	./src/main.c													\
 			./src/curses/input.c											\
 			./src/curses/variant.c											\
 			./src/curses/special_character.c								\
+\
 			./src/curses/result/result.c									\
 			./src/curses/result/calculs.c									\
 			./src/curses/result/resutl_display.c							\
 			./src/curses/result/graph/place_point.c							\
+\
 			./src/player/free_player.c										\
 			./src/player/player_init.c										\
+\
 			./src/utils/general/strlen_til_c.c								\
 			./src/utils/general/exit_with_message.c							\
 			./src/utils/general/my_str_to_word_array.c						\
@@ -33,7 +37,11 @@ SRC		=	./src/main.c													\
 			./src/utils/general/my_realloc.c								\
 			./src/utils/general/my_char_isprintable.c						\
 			./src/utils/general/my_find_digits.c							\
+\
 			./src/utils/ncurses/clear_window.c								\
+			./src/utils/ncurses/display_ascii_from_file.c					\
+\
+			./src/debug/my_show_word_array.c								\
 
 OBJ		=	$(SRC:.c=.o)
 

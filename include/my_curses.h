@@ -92,7 +92,7 @@ typedef struct ui_s {
     result_t *result;
 }ui_t;
 
-//ui function
+//ui_t function
 void my_curses(void);
 void free_ui(ui_t *ui);
 void cut_sentence_for_display(ui_t *ui, char *sentence);

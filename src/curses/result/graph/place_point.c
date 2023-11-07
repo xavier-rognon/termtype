@@ -34,7 +34,6 @@ void get_point_position(ui_t *ui)
             i++;
         }
         ui->result->graph_point_col[i] = graph_width * ((double)ui->result->time_upto_word[index] / test_time_ms);
-        DEBUG("%f %lld %lld\n", ((double)ui->result->time_upto_word[index] / test_time_ms), ui->result->time_upto_word[index], test_time_ms)
         if (ui->result->graph_point_col[i] == 0)
             ui->result->graph_point_col[i] = graph_width;
         ui->result->graph_point_row[i] = graph_height + 1 - graph_height *

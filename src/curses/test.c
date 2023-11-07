@@ -22,6 +22,7 @@ void reset_test(player_t *player, ui_t *ui)
                                            ui->language->language_list_json[ui->language->current_language]), ui->lenght);
     free_array(ui->sentence_arr);
     cut_sentence_for_display(ui, ui->parser->sentence);
+    ui->result->data[ACCURACY] = (1 - ((double)ui->result->data[NB_ERRORS] / player->lenght_input)) * 100;
     player_reset_test(player, ui->parser);
     refresh();
     curs_set(0);
@@ -106,6 +107,16 @@ void print_player_input(player_t *player, char **sentence_arr, int col, int row)
     }
 }
 
+void print_info_test(player_t *player, ui_t *ui)
+{
+    if (ui->gamemode == TIME)
+        mvprintw(ui->row / 2 - 2, ui->col / 6,
+                 "%lld", player->playtime + (ui->result->time_start_test - get_time_millisecond()) / 1000);
+    else
+        mvprintw(ui->row / 2 - 2, ui->col / 6,
+                 "%d/%d", ui->result->current_word, ui->lenght);
+}
+
 void end_of_timer(player_t *player, ui_t *ui)
 {
     if (check_alarm_g == 1) {
@@ -120,6 +131,7 @@ void test_game(player_t *player, ui_t *ui)
         return;
     print_sentence(player, ui);
     print_player_input(player, ui->sentence_arr, ui->col, ui->row);
+    print_info_test(player, ui);
     move(player->cursor_pos[0], player->cursor_pos[1]);
     player->last_input = getch();
     if (player->last_input == -61) {

@@ -46,5 +46,6 @@ bool my_char_isalphanum(char c);
 bool my_char_isprintable(char str);
 int my_find_digits(int nb);
 void clear_window(WINDOW *window);
+void display_ascii_from_file(WINDOW *window, char *file, int x, int y);
 
 #endif /* !INCLUDE_H_ */
