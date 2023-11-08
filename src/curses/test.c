@@ -22,7 +22,7 @@ void reset_test(player_t *player, ui_t *ui)
                                            ui->language->language_list_json[ui->language->current_language]), ui->lenght);
     free_array(ui->sentence_arr);
     cut_sentence_for_display(ui, ui->parser->sentence);
-    ui->result->data[ACCURACY] = (1 - ((double)ui->result->data[NB_ERRORS] / player->lenght_input)) * 100;
+    ui->result->data[ACCURACY] = get_accuracy(ui->result, player->lenght_input);
     player_reset_test(player, ui->parser);
     refresh();
     curs_set(0);

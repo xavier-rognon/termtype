@@ -23,6 +23,8 @@ int get_wpm(result_t *result, int input_lenght)
 
 int get_accuracy(result_t *result, int input_lenght)
 {
+    if (input_lenght == 0)
+        return 0;
     return ((1 - (result->data[NB_ERRORS] / input_lenght)) * 100);
 }
 

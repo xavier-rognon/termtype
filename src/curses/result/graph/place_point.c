@@ -16,9 +16,11 @@ void get_point_position(ui_t *ui)
     int i = 0;
     int graph_height = ui->row / 3;
     int graph_width = (ui->col >> 1) - 2;
-    long long test_time_ms = ui->result->time_upto_word[ui->result->current_word - 1];
+    long long test_time_ms = 0;
     int temp_col = -1;
 
+    if (ui->result->current_word != 0)
+        test_time_ms = ui->result->time_upto_word[ui->result->current_word - 1];
     if (ui->result->wpm_per_word[index] == 0)
         ui->result->wpm_per_word[index] = ui->result->wpm_per_word[index + 1];
     ui->result->graph_point_col = malloc(sizeof(int) * ui->result->current_word + 3);
@@ -104,6 +106,8 @@ void draw_point_temp(ui_t *ui)
     int diff[2];
     int i = 1;
 
+    if (ui->result->current_word == 0)
+        return;
     get_point_position(ui);
     while (i <= ui->result->current_word) {
         diff[0] = find_difference_between_point(ui->result->graph_point_col, i);
