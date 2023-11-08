@@ -40,8 +40,10 @@ void update_offset(ui_t *ui)
     ui->language->search_offset = 0;
     ui->language->start_showing = 0;
 
-    if (strlen(ui->language->search) == 0)
+    if (strlen(ui->language->search) == 0){
+        ui->language->language_highlight = 0;
         return;
+    }
     for(int i = 0; strncmp(ui->language->language_list[i], ui->language->search,
                            strlen(ui->language->search)) != 0;
         i++, ui->language->search_offset++)

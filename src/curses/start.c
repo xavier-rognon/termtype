@@ -18,9 +18,9 @@ void init_top_bar(ui_t *ui)
 
 void init_language_menu(ui_t *ui)
 {
-    ui->language->language_menu = newwin(ui->row, 50, 0, (ui->col - 50) / 2);
+    ui->language->language_menu = newwin(ui->row, ui->col / 3, 0, (ui->col - ui->col / 3) / 2);
     ui->language->search = strdup("\0");
-    waddch(ui->language->language_menu, '|');
+    //waddch(ui->language->language_menu, '|');
     box(ui->language->language_menu, 0, 0);
     keypad(ui->language->language_menu, true);
 }
@@ -107,10 +107,11 @@ void display_language(ui_t *ui)
             wattroff(ui->language->language_menu, COLOR_PAIR(3));
         }
         mvwprintw(ui->language->language_menu, 1, 2, "> %s| ", ui->language->search);
-        for (int i = 0; i < 48; i++)
-            mvwprintw(ui->language->language_menu, 2, 1 + i, "—");
+        for (int i = 1; i < ui->col / 3 - 1; i++)
+            mvwprintw(ui->language->language_menu, 2, i, "—");
         refresh();
         wrefresh(ui->language->language_menu);
+        clear_window(ui->language->language_menu);
     }
 }
 
