@@ -48,6 +48,15 @@ int find_english_index(char **language_json)
     return -1;
 }
 
+void language_free(language_t *language)
+{
+    free_array(language->language_list);
+    free_array(language->language_list_json);
+    free(language->language);
+    free(language->search);
+    free(language);
+}
+
 language_t *language_init(void)
 {
     language_t *language = malloc(sizeof(language_t));
@@ -78,6 +87,7 @@ language_t *language_init(void)
     language->start_showing = 0;
     language->language_highlight = 0;
     language->search_offset = 0;
+    free(file_names);
     return language;
 }
 

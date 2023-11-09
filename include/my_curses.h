@@ -102,6 +102,7 @@ void print_sentence(player_t *player, ui_t *ui);
 //start screen
 void init_language_menu(ui_t *ui);
 language_t *language_init(void);
+void language_free(language_t *language);
 void init_top_bar(ui_t *ui);
 void start(player_t *player, ui_t *ui);
 void manage_variant(ui_t *ui, player_t *player);

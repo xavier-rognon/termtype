@@ -12,20 +12,22 @@
 
 void reset_test(player_t *player, ui_t *ui)
 {
+    char *language_path = my_strcat("./asset/languages/",
+                                    ui->language->language_list_json[ui->language->current_language]);
     clear_window(stdscr);
     clear_window(ui->result->graph);
     player->state = RESULT;
     refresh();
     ui->result->data[WPM_MAX] = get_max_wpm(ui->result, player->lenght_input);
     free_parser(ui->parser);
-    ui->parser = parser_language(my_strcat("./asset/languages/",
-                                           ui->language->language_list_json[ui->language->current_language]), ui->lenght);
+    ui->parser = parser_language(language_path, ui->lenght);
     free_array(ui->sentence_arr);
     cut_sentence_for_display(ui, ui->parser->sentence);
     ui->result->data[ACCURACY] = get_accuracy(ui->result, player->lenght_input);
     player_reset_test(player, ui->parser);
     refresh();
     curs_set(0);
+    free(language_path);
 }
 
 bool check_end_of_line(player_t *player, char **sentence_arr, int col, ui_t *ui)

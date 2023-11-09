@@ -90,7 +90,6 @@ void my_curses(void)
     player->cursor_pos[0] = ui->row / 2 - 1;
     player->cursor_pos[1] = (ui->col - strlen(ui->sentence_arr[0])) / 2;
     while (ui->exit == false) {
-        refresh();
         clear();
         start(player, ui);
         test_game(player, ui);

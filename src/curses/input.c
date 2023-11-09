@@ -88,6 +88,7 @@ void input_language_menu(ui_t *ui, player_t *player, int input)
         free_parser(ui->parser);
         ui->parser = parser_language(my_strcat("./asset/languages/",
                                                ui->language->language_list_json[ui->language->current_language]), ui->lenght);
+        free(ui->language->language);
         ui->language->language = my_strcat("󰇧 ", ui->language->language_list[ui->language->current_language]);
         free_array(ui->sentence_arr);
         cut_sentence_for_display(ui, ui->parser->sentence);
