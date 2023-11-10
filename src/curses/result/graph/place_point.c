@@ -17,13 +17,14 @@ void get_point_position(ui_t *ui)
 
     ui->result->graph_point_col = malloc(sizeof(int) * ui->result->current_word);
     ui->result->graph_point_row = malloc(sizeof(int) * ui->result->current_word);
-    while (i < ui->result->current_word) {
+    while (index < ui->result->current_word) {
         if (i == 0)
             ui->result->graph_point_col[i] = 1;
         else
             ui->result->graph_point_col[i] = (int)(ui->result->time_upto_word[index] * graph_width) /
                 ui->result->time_upto_word[ui->result->current_word - 1];
         ui->result->graph_point_row[i] = graph_height - (ui->result->wpm_per_word[index] * graph_height) / ui->result->data[WPM_MAX];
+        DEBUG("wpm : %d", ui->result->wpm_per_word[index])
         if (prev_graph_point_col != ui->result->graph_point_col[i])
             i++;
         index++;

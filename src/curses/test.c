@@ -14,23 +14,18 @@ void reset_test(player_t *player, ui_t *ui)
 {
     char *language_path = my_strcat("./asset/languages/",
                                     ui->language->language_list_json[ui->language->current_language]);
+
     clear_window(stdscr);
     clear_window(ui->result->graph);
-    player->state = RESULT;
-    refresh();
-    ui->result->data[WPM_MAX] = get_max_wpm(ui->result, player->lenght_input);
     free_parser(ui->parser);
     ui->parser = parser_language(language_path, ui->lenght);
+    player_reset_test(player, ui->parser);
     free_array(ui->sentence_arr);
     cut_sentence_for_display(ui, ui->parser->sentence);
-    ui->result->data[ACCURACY] = get_accuracy(ui->result, player->lenght_input);
-    player_reset_test(player, ui->parser);
-    refresh();
-    curs_set(0);
     free(language_path);
 }
 
-bool check_end_of_line(player_t *player, char **sentence_arr, int col, ui_t *ui)
+bool check_end_of_line(player_t *player, char **sentence_arr, int col)
 {
     if (player->cursor_pos[1] == (int) ((col - strlen(sentence_arr[player->current_row[player->current_line - 1]])) / 2 +
         strlen(sentence_arr[player->current_row[player->current_line - 1]]) - player->offset_current_line)) {
@@ -42,7 +37,7 @@ bool check_end_of_line(player_t *player, char **sentence_arr, int col, ui_t *ui)
         player->current_row[1]++;
         player->current_row[2]++;
         if (sentence_arr[player->current_row[0]] == NULL)
-            reset_test(player, ui);
+            check_alarm_g = 1;
         player->cursor_pos[1] = (col - strlen(sentence_arr[player->current_row[0]])) / 2;
         return true;
     }
@@ -86,7 +81,7 @@ void check_input(player_t *player, ui_t *ui)
         ui->result->data[INCORRECT]++;
     }
     player->lenght_input++;
-    if (check_end_of_line(player, ui->sentence_arr, ui->col, ui) == false)
+    if (check_end_of_line(player, ui->sentence_arr, ui->col) == false)
         player->cursor_pos[1]++;
 }
 
@@ -123,7 +118,10 @@ void end_of_timer(player_t *player, ui_t *ui)
 {
     if (check_alarm_g == 1) {
         check_alarm_g = 0;
-        reset_test(player, ui);
+        player->state = RESULT;
+        ui->result->data[WPM_MAX] = get_max_wpm(ui->result);
+        ui->result->data[ACCURACY] = get_accuracy(ui->result, player->lenght_input);
+        curs_set(0);
     }
 }
 

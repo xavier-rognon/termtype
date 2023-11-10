@@ -6,6 +6,7 @@
 */
 
 #include "../../../include/include.h"
+#include <curses.h>
 
 int get_length_next(int value, int current)
 {
@@ -47,11 +48,33 @@ void display_with_ascii(char *title, int value, int x, int y)
     display_value(value, x - get_length_next(value, 0), y + 1);
 }
 
-void display_stat(ui_t *ui, player_t *player)
+void result_button(ui_t *ui)
+{
+    int middle = ui->col / 2;
+    int hafl_middle_button = strlen(ui->result->result_button[1]) / 2;
+
+    if (ui->result->current_button == 0)
+        attron(A_REVERSE);
+    mvprintw(ui->row / 3 * 2 + 3, middle - hafl_middle_button - strlen(ui->result->result_button[0]),
+             "%s", ui->result->result_button[0]);
+    attroff(A_REVERSE);
+    if (ui->result->current_button == 1)
+        attron(A_REVERSE);
+    mvprintw(ui->row / 3 * 2 + 3, middle - hafl_middle_button, "%s", ui->result->result_button[1]);
+    attroff(A_REVERSE);
+    if (ui->result->current_button == 2)
+        attron(A_REVERSE);
+    mvprintw(ui->row / 3 * 2 + 3, middle + hafl_middle_button, "%s", ui->result->result_button[2]);
+    attroff(A_REVERSE);
+}
+
+void display_stat(ui_t *ui)
 {
     int column_offset = ui->col / 4 + ui->col / 16;
     int last_word_index = ui->result->current_word - 1;
 
+    clear_window(ui->result->graph);
+    clear_window(stdscr);
     if (ui->result->current_word == 0) {
         display_with_ascii("WPM", 0, column_offset - 4, ui->row / 3);
         mvprintw(ui->row / 3 * 2 - 1, column_offset + ui->col / 2, "%d", 0);
@@ -66,6 +89,7 @@ void display_stat(ui_t *ui, player_t *player)
     mvprintw(ui->row / 3 * 3 / 2 + 2, column_offset - 3, "M");
     mvprintw((ui->row / 3) * 2 - 1, column_offset - 1, "0");
     mvprintw(ui->row / 3, column_offset - my_find_digits(ui->result->data[WPM_MAX]), "%d", ui->result->data[WPM_MAX]);
+    result_button(ui);
     box(ui->result->graph, 0, 0);
     draw_point_temp(ui);
     refresh();
@@ -76,9 +100,7 @@ void display_result(ui_t *ui, player_t *player)
 {
     if (player->state != RESULT)
         return;
-    display_stat(ui, player);
-    while (getch() != 'q');
-    player->state = START;
-    reset_result(ui->result, ui->parser->nb_word);
+    display_stat(ui);
+    analyze_input_result(ui, player);
 }
 

@@ -6,11 +6,12 @@
 */
 
 #include "../../include/include.h"
+#include <curses.h>
 #include <stdio.h>
 
 void init_top_bar(ui_t *ui)
 {
-    ui->top_bar = newwin(3, ui->col / 2, ui->row - (3 * ui->row / 4) - 2, ui->col / 4);
+    ui->top_bar = newwin(3, ui->col / 2, ui->row / 4 - 2, ui->col / 4);
     box(ui->top_bar, 0, 0);
     curs_set(0);
     keypad(ui->top_bar, true);
@@ -20,7 +21,6 @@ void init_language_menu(ui_t *ui)
 {
     ui->language->language_menu = newwin(ui->row, ui->col / 3, 0, (ui->col - ui->col / 3) / 2);
     ui->language->search = strdup("\0");
-    //waddch(ui->language->language_menu, '|');
     box(ui->language->language_menu, 0, 0);
     keypad(ui->language->language_menu, true);
 }
@@ -88,7 +88,7 @@ void display_language(ui_t *ui)
 
     if (ui->menu == LANGUAGE_BUTTON)
         attron(A_REVERSE);
-    mvprintw(ui->row / 2 - 4, (ui->col - strlen(ui->language->language)) / 2, "%s", ui->language->language);
+    mvprintw(ui->row / 5 * 2, (ui->col - strlen(ui->language->language)) / 2, "%s", ui->language->language);
     attroff(A_REVERSE);
     if (ui->menu == LANGUAGE_MENU) {
         box(ui->language->language_menu, 0, 0);
@@ -98,7 +98,7 @@ void display_language(ui_t *ui)
         ui->language->language_list[i] != NULL; i++, i_2++) {
             if (i == ui->language->current_language)
                 wattron(ui->language->language_menu, COLOR_PAIR(3));
-            if (i == ui->language->language_highlight)
+            if (i == ui->language->language_highlight && ui->language->state == SEARCH)
                 wattron(ui->language->language_menu, A_REVERSE);
             if (strncmp(ui->language->language_list[i],
                         ui->language->search, strlen(ui->language->search)) == 0)
@@ -109,6 +109,10 @@ void display_language(ui_t *ui)
         mvwprintw(ui->language->language_menu, 1, 2, "> %s| ", ui->language->search);
         for (int i = 1; i < ui->col / 3 - 1; i++)
             mvwprintw(ui->language->language_menu, 2, i, "—");
+        if (ui->language->state == EXIT)
+            wattron(ui->language->language_menu, A_REVERSE);
+        mvwprintw(ui->language->language_menu, 0, ui->col / 3 - 1, "X");
+        wattroff(ui->language->language_menu, A_REVERSE);
         refresh();
         wrefresh(ui->language->language_menu);
         clear_window(ui->language->language_menu);
@@ -117,18 +121,23 @@ void display_language(ui_t *ui)
 
 void start(player_t *player, ui_t *ui)
 {
-    char info[94] = "to exit press esc then wait a bit, you can navigate inside of the menus with the arrow keys.";
-    char info_2[26] = "press tab to change menu.";
-    char start[18] = " 󰐊 start test \0";
+    char info[49] = "Use tab and the arrow key to navigates the menus";
+    char info_2[26] = "Press tab to change menu.";
+    char start[18] = " 󰐊 start test ";
+    char exit[21] = " 󰗼 exit termtype ";
 
     if (player->state != START)
         return;
     print_sentence(player, ui);
-    mvprintw(ui->row / 5 * 4, (ui->col - 94) / 2, "%s", info);
+    mvprintw(ui->row / 5 * 4, (ui->col - 48) / 2, "%s", info);
     mvprintw(ui->row / 5 * 4 + 1, (ui->col - 26) / 2, "%s", info_2);
     if (ui->menu == START_BUTTON)
         attron(A_REVERSE);
-    mvprintw(ui->row / 5 * 3, (ui->col - strlen(start)) / 2, "%s", start);
+    mvprintw(ui->row / 3 * 2, ui->col / 2 - strlen(start), "%s", start);
+    attroff(A_REVERSE);
+    if (ui->menu == EXIT_BUTTON)
+        attron(A_REVERSE);
+    mvprintw(ui->row / 3 * 2, ui->col / 2, "%s", exit);
     attroff(A_REVERSE);
     display_top_bar(ui);
     display_language(ui);

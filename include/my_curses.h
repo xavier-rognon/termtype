@@ -37,6 +37,7 @@ enum menu_list_start {
     LANGUAGE_BUTTON,
     LANGUAGE_MENU,
     START_BUTTON,
+    EXIT_BUTTON,
 };
 
 enum data_value {
@@ -49,17 +50,24 @@ enum data_value {
     TIME_TEST,
 };
 
+enum language_menu_event {
+    SEARCH,
+    EXIT,
+};
+
 typedef struct result_s {
     WINDOW *graph;
-    int data[8];
     long long time_start_test;
     long long time_start_word;
     long long *time_upto_word;
+    int data[8];
     int *graph_point_col;
     int *graph_point_row;
     int *wpm_per_word;
     int *wpm_raw_per_word;
     int current_word;
+    int current_button;
+    char **result_button;
 }result_t;
 
 typedef struct language_s {
@@ -72,6 +80,7 @@ typedef struct language_s {
     int current_language;
     int start_showing;
     int search_offset;
+    int state;
 }language_t;
 
 typedef struct ui_s {
@@ -111,6 +120,7 @@ void manage_variant(ui_t *ui, player_t *player);
 void analyze_input(ui_t *ui, player_t *player);
 void test_game(player_t *player, ui_t *ui);
 void check_special_character(int row, int col, char to_check);
+void reset_test(player_t *player, ui_t *ui);
 
 //result screen
 result_t *init_result(int sentence_length, int col, int row);
@@ -119,9 +129,10 @@ void free_result(result_t *result);
 int get_raw_wpm(result_t *result, int input_lenght);
 int get_wpm(result_t *result, int input_lenght);
 int get_accuracy(result_t *result, int input_lenght);
-int get_max_wpm(result_t *result, int input_lenght);
+int get_max_wpm(result_t *result);
 void display_result(ui_t *ui, player_t *player);
 long long get_time_millisecond(void);
 void draw_point_temp(ui_t *ui);
+void analyze_input_result(ui_t *ui, player_t *player);
 
 #endif /* MY_CURSES_H_ */

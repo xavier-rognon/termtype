@@ -87,6 +87,7 @@ language_t *language_init(void)
     language->start_showing = 0;
     language->language_highlight = 0;
     language->search_offset = 0;
+    language->state = 0;
     free(file_names);
     return language;
 }

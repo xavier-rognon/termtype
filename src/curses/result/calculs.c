@@ -28,7 +28,7 @@ int get_accuracy(result_t *result, int input_lenght)
     return ((1 - ((double)result->data[NB_ERRORS] / input_lenght)) * 100);
 }
 
-int get_max_wpm(result_t *result, int input_lenght)
+int get_max_wpm(result_t *result)
 {
     int wpm_max = 0;
 

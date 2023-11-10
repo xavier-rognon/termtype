@@ -57,6 +57,15 @@ void input_language_menu(ui_t *ui, player_t *player, int input)
     char input_str[2] = {input, 0};
 
     player = player;
+    if (ui->language->state == EXIT) {
+        if (input == '\t')
+            ui->language->state = SEARCH;
+        if (input == '\n')
+            ui->menu = LANGUAGE_BUTTON;
+        return;
+    }
+    if (input == '\t' && ui->language->state == SEARCH)
+        ui->language->state = EXIT;
     if (input == KEY_DOWN && ui->language->language_list[ui->language->language_highlight] != NULL) {
         if (ui->language->language_list[ui->language->language_highlight + 1] == NULL)
             return;
@@ -79,9 +88,9 @@ void input_language_menu(ui_t *ui, player_t *player, int input)
             ui->language->language_highlight--;
         else if (strncmp(ui->language->language_list[ui->language->language_highlight - 1], ui->language->search,
                          strlen(ui->language->search)) == 0 || strlen(ui->language->search) == 0){
-            ui->language->language_highlight--;
-            ui->language->start_showing--;
-        }
+        ui->language->language_highlight--;
+        ui->language->start_showing--;
+    }
     }
     if (input == '\n') {
         ui->language->current_language = ui->language->language_highlight;
@@ -93,11 +102,6 @@ void input_language_menu(ui_t *ui, player_t *player, int input)
         free_array(ui->sentence_arr);
         cut_sentence_for_display(ui, ui->parser->sentence);
         return;
-    }
-    if (input == 27) {
-        ui->menu = LANGUAGE_BUTTON;
-        input = 0;
-        ui->language->search = "\0";
     }
     if (input == 263 && strlen(ui->language->search) != 0) {
         ui->language->search[strlen(ui->language->search) - 1] = 0;
@@ -124,17 +128,24 @@ void input_start_button(ui_t *ui, player_t *player, int input)
             alarm(player->playtime);
     }
     if (input == '\t')
+        ui->menu = EXIT_BUTTON;
+}
+
+void input_exit_button(ui_t *ui, player_t *player, int input)
+{
+    player = player;
+    if (input == '\t')
         ui->menu = TOP_BAR;
+    if (input == '\n')
+        ui->exit = true;
 }
 
 void analyze_input(ui_t *ui, player_t *player)
 {
     int input = getch();
-    void (*input_menu[4])(ui_t *, player_t *, int) = {&input_top_bar, &input_language_button,
-    &input_language_menu, &input_start_button};
+    void (*input_menu[5])(ui_t *, player_t *, int) = {&input_top_bar, &input_language_button,
+        &input_language_menu, &input_start_button, &input_exit_button};
 
-    if (input == 27 && ui->menu != LANGUAGE_MENU)
-        ui->exit = true;
     input_menu[ui->menu](ui, player, input);
 }
 

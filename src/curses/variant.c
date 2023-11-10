@@ -33,6 +33,7 @@ void word_variant(ui_t *ui, player_t *player)
     char *language_path = my_strcat("./asset/languages/", 
                                     ui->language->language_list_json[ui->language->current_language]);
 
+    player = player;
     if (ui->variant == S)
         ui->lenght = 25;
     if (ui->variant == M)

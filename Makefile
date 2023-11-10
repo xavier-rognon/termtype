@@ -21,6 +21,7 @@ SRC		=	./src/main.c													\
 \
 			./src/curses/result/result.c									\
 			./src/curses/result/calculs.c									\
+			./src/curses/result/result_input.c								\
 			./src/curses/result/result_display.c							\
 			./src/curses/result/graph/place_point.c							\
 \

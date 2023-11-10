@@ -94,6 +94,7 @@ void my_curses(void)
         start(player, ui);
         test_game(player, ui);
         display_result(ui, player);
+        getmaxyx(stdscr, ui->row, ui->col);
     }
     endwin();
     free_ui(ui);

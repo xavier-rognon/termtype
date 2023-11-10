@@ -6,18 +6,19 @@
 */
 
 #include "../../../include/include.h"
-#include <curses.h>
 
 result_t *init_result(int sentence_length, int col, int row)
 {
     result_t *result = malloc(sizeof(result_t));
 
+    result->result_button = my_str_to_word_array("   Next test  ,   Retry test  ,   Home  ", ",");
     result->time_upto_word = malloc(sizeof(int) * sentence_length);
     result->wpm_per_word = malloc(sizeof(int) * sentence_length);
     result->wpm_raw_per_word = malloc(sizeof(int) * sentence_length);
     result->graph_point_row = NULL;
     result->graph_point_col = NULL;
     result->current_word = 0;
+    result->current_button = 0;
     result->data[NB_ERRORS] = 0;
     result->data[INCORRECT] = 0;
     result->graph = newwin(row / 3, col / 2, row / 3, col / 4 + col / 16);
@@ -44,6 +45,7 @@ void reset_result(result_t *result, int sentence_length)
 
 void free_result(result_t *result)
 {
+    free_array(result->result_button);
     free(result->time_upto_word);
     free(result->wpm_per_word);
     free(result->wpm_raw_per_word);
