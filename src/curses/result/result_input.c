@@ -59,3 +59,4 @@ void analyze_input_result(ui_t *ui, player_t *player)
     if (input == '\n')
         action[ui->result->current_button](ui, player);
 }
+

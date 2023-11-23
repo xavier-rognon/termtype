@@ -10,8 +10,10 @@
 
 void check_special_character(int row, int col, char to_check)
 {
-    //mvprintw(0, 0, "%d", to_check);
     switch (to_check) {
+        case -69:
+            mvprintw(row, col, "û");
+            break;
         case -71:
             mvprintw(row, col, "ù");
             break;

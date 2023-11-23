@@ -25,6 +25,8 @@
 #include "my_curses.h"
 #include "player.h"
 
+#include "../src/utils/json/nxjson.h"
+
 extern int check_alarm_g;
 
 #ifndef INCLUDE_H_
@@ -35,6 +37,7 @@ extern int check_alarm_g;
 void exit_with_message(char *message, int code);
 int my_strlen_til_c(char *str, char c);
 char **my_str_to_word_array(char *str, char *limiter);
+int count_word(char *str, char *limiter);
 int my_arrlen(char **array);
 void my_show_word_array(char **array);
 void my_show_word_array_ncurses(char **array);

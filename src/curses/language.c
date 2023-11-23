@@ -48,24 +48,33 @@ int find_english_index(char **language_json)
     return -1;
 }
 
+void free_gamemode_info(gamemode_language_info_t *gamemode_info)
+{
+    free_array(gamemode_info->language_list);
+    free_array(gamemode_info->language_list_json);
+    free(gamemode_info->search);
+    free(gamemode_info->language);
+    free(gamemode_info);
+}
+
 void language_free(language_t *language)
 {
-    free_array(language->language_list);
-    free_array(language->language_list_json);
-    free(language->language);
-    free(language->search);
+    free_gamemode_info(language->info[0]);
+    free_gamemode_info(language->info[1]);
+    free(language->info);
     free(language);
 }
 
-language_t *language_init(void)
+gamemode_language_info_t *load_language_from_dir(char *path_to_dir)
 {
-    language_t *language = malloc(sizeof(language_t));
-    DIR *language_dir = opendir("./asset/languages");
+    gamemode_language_info_t *language = malloc(sizeof(gamemode_language_info_t));
+    DIR *language_dir;
     char *file_names;
     char *temp;
     struct dirent *de;
 
-    if (language == NULL)
+    language_dir = opendir(path_to_dir);
+    if (language_dir == NULL)
         exit_with_message("failed to open the directory\n", 1);
     for (int i = 0; i < 5; i++)
         de = readdir(language_dir);
@@ -84,11 +93,23 @@ language_t *language_init(void)
     language->language_list = clean_for_display(language->language_list_json);
     language->current_language = find_english_index(language->language_list_json);
     language->language = my_strcat("󰇧 ", language->language_list[language->current_language]);
+    language->search = strdup("\0");
     language->start_showing = 0;
     language->language_highlight = 0;
     language->search_offset = 0;
-    language->state = 0;
     free(file_names);
+    return language;
+}
+
+language_t *language_init(void)
+{
+    language_t *language = malloc(sizeof(language_t));
+
+    language->info = malloc(sizeof(gamemode_language_info_t *) * 2);
+    language->info[0] = load_language_from_dir("./asset/quotes");
+    language->info[1] = load_language_from_dir("./asset/languages");
+    language->state = 0;
+    language->current_type = RANDOM_WORDS;
     return language;
 }
 

@@ -15,7 +15,12 @@ void input_top_bar(ui_t *ui, player_t *player, int input)
     if (ui->top_bar_highlight != 6 && input == KEY_RIGHT)
         ui->top_bar_highlight++;
     if (input == '\n' && ui->top_bar_highlight < 3) {
+        ui->prev_gamemode = ui->gamemode;
         ui->gamemode = ui->top_bar_highlight;
+        if (ui->gamemode != ui->prev_gamemode && (ui->gamemode == QUOTE))
+            ui->language->current_type = QUOTES;
+        if (ui->gamemode != ui->prev_gamemode && (ui->prev_gamemode == QUOTE))
+            ui->language->current_type = RANDOM_WORDS;
         manage_variant(ui, player);
     }
     if (input == '\n' && ui->top_bar_highlight >= 3) {
@@ -37,24 +42,26 @@ void input_language_button(ui_t *ui, player_t *player, int input)
 
 void update_offset(ui_t *ui)
 {
-    ui->language->search_offset = 0;
-    ui->language->start_showing = 0;
+    gamemode_language_info_t *current_type = ui->language->info[ui->language->current_type];
 
-    if (strlen(ui->language->search) == 0){
-        ui->language->language_highlight = 0;
+    current_type->search_offset = 0;
+    current_type->start_showing = 0;
+    if (strlen(current_type->search) == 0){
+        current_type->language_highlight = 0;
         return;
     }
-    for(int i = 0; strncmp(ui->language->language_list[i], ui->language->search,
-                           strlen(ui->language->search)) != 0;
-        i++, ui->language->search_offset++)
-        if (ui->language->language_list[i + 1] == NULL)
+    for(int i = 0; strncmp(current_type->language_list[i], current_type->search,
+                           strlen(current_type->search)) != 0;
+        i++, current_type->search_offset++)
+        if (current_type->language_list[i + 1] == NULL)
             break;
-    ui->language->language_highlight = ui->language->search_offset;
+    current_type->language_highlight = current_type->search_offset;
 }
 
 void input_language_menu(ui_t *ui, player_t *player, int input)
 {
     char input_str[2] = {input, 0};
+    gamemode_language_info_t *current_type = ui->language->info[ui->language->current_type];
 
     player = player;
     if (ui->language->state == EXIT) {
@@ -66,49 +73,50 @@ void input_language_menu(ui_t *ui, player_t *player, int input)
     }
     if (input == '\t' && ui->language->state == SEARCH)
         ui->language->state = EXIT;
-    if (input == KEY_DOWN && ui->language->language_list[ui->language->language_highlight] != NULL) {
-        if (ui->language->language_list[ui->language->language_highlight + 1] == NULL)
+    if (input == KEY_DOWN && current_type->language_list[current_type->language_highlight] != NULL) {
+        if (current_type->language_list[current_type->language_highlight + 1] == NULL)
             return;
-        if (ui->language->language_highlight - ui->language->start_showing - ui->language->search_offset < ui->row - 5 &&
-            (strncmp(ui->language->language_list[ui->language->language_highlight + 1], ui->language->search,
-                     strlen(ui->language->search)) == 0 || strlen(ui->language->search) == 0))
-            ui->language->language_highlight++;
-        else if (strncmp(ui->language->language_list[ui->language->language_highlight + 1], ui->language->search,
-                         strlen(ui->language->search)) == 0 || strlen(ui->language->search) == 0){
-        ui->language->language_highlight++;
-        ui->language->start_showing++;
+        if (current_type->language_highlight - current_type->start_showing - current_type->search_offset < ui->row - 5 &&
+            (strncmp(current_type->language_list[current_type->language_highlight + 1], current_type->search,
+                     strlen(current_type->search)) == 0 || strlen(current_type->search) == 0))
+            current_type->language_highlight++;
+        else if (strncmp(current_type->language_list[current_type->language_highlight + 1], current_type->search,
+                         strlen(current_type->search)) == 0 || strlen(current_type->search) == 0){
+        current_type->language_highlight++;
+        current_type->start_showing++;
     }
     }
-    if (input == KEY_UP && ui->language->language_highlight > 0) {
-        if (ui->language->language_highlight - 1 == -1)
+    if (input == KEY_UP && current_type->language_highlight > 0) {
+        if (current_type->language_highlight - 1 == -1)
             return;
-        if (ui->language->language_highlight != ui->language->start_showing + ui->language->search_offset &&
-            strncmp(ui->language->language_list[ui->language->language_highlight - 1], ui->language->search,
-                    strlen(ui->language->search)) == 0)
-            ui->language->language_highlight--;
-        else if (strncmp(ui->language->language_list[ui->language->language_highlight - 1], ui->language->search,
-                         strlen(ui->language->search)) == 0 || strlen(ui->language->search) == 0){
-        ui->language->language_highlight--;
-        ui->language->start_showing--;
+        if (current_type->language_highlight != current_type->start_showing + current_type->search_offset &&
+            strncmp(current_type->language_list[current_type->language_highlight - 1], current_type->search,
+                    strlen(current_type->search)) == 0)
+            current_type->language_highlight--;
+        else if (strncmp(current_type->language_list[current_type->language_highlight - 1], current_type->search,
+                         strlen(current_type->search)) == 0 || strlen(current_type->search) == 0){
+        current_type->language_highlight--;
+        current_type->start_showing--;
     }
     }
     if (input == '\n') {
-        ui->language->current_language = ui->language->language_highlight;
-        free_parser(ui->parser);
-        ui->parser = parser_language(my_strcat("./asset/languages/",
-                                               ui->language->language_list_json[ui->language->current_language]), ui->lenght);
-        free(ui->language->language);
-        ui->language->language = my_strcat("󰇧 ", ui->language->language_list[ui->language->current_language]);
+        current_type->current_language = current_type->language_highlight;
+        manage_variant(ui, player);
+        free(current_type->language);
+        current_type->language = my_strcat("󰇧 ", current_type->language_list[current_type->current_language]);
         free_array(ui->sentence_arr);
         cut_sentence_for_display(ui, ui->parser->sentence);
         return;
     }
-    if (input == 263 && strlen(ui->language->search) != 0) {
-        ui->language->search[strlen(ui->language->search) - 1] = 0;
+    if (input == 263 && strlen(current_type->search) != 0) {
+        current_type->search[strlen(current_type->search) - 1] = 0;
         update_offset(ui);
     }
     if (my_char_isprintable(input) == true && input != '\n') {
-        ui->language->search = my_strcat(ui->language->search, input_str);
+        if (current_type->search == NULL)
+            current_type->search = (char *)&input;
+        else
+            current_type->search = my_strcat(current_type->search, input_str);
         update_offset(ui);
     }
 }

@@ -10,7 +10,6 @@
 
 static void init_curses(void)
 {
-    language_init();
     initscr();
     raw();
     keypad(stdscr, TRUE);
@@ -34,12 +33,12 @@ ui_t *init_ui(void)
     ui->top_bar_option[2] = my_str_to_word_array("    S    ,    M    ,    L    ,    XL    ", ",");
     ui->top_bar_option[3] = NULL;
     ui->top_bar_highlight = 0;
-    ui->lenght = 350;
+    ui->language = language_init();
     ui->gamemode = TIME;
+    ui->prev_gamemode = TIME;
     ui->variant = M;
     ui->menu = TOP_BAR;
     ui->exit = false;
-    ui->language = language_init();
     return ui;
 }
 
@@ -52,8 +51,8 @@ void cut_sentence_for_display(ui_t *ui, char *sentence)
     ui->sentence_arr = malloc(sizeof(char *));
     ui->sentence_arr[0] = NULL;
     for (int i = 0; sentence[i] != 0; i++) {
-        if (i - prev_stop == ui->col - col_third) {
-            for (; sentence[i + 1] != 0 && sentence[i] != ' '; i++);
+        if (i - prev_stop == col_third * 2 || sentence[i] == '\n') {
+            for (; sentence[i + 1] != 0 && (sentence[i] != ' ' && sentence[i] != '\n'); i++);
             ui->sentence_arr = my_realloc(ui->sentence_arr, array_size * sizeof(char *));
             if (prev_stop == 0)
                 ui->sentence_arr[array_size - 1] = strndup(&sentence[prev_stop], i - prev_stop - 1);
@@ -63,15 +62,22 @@ void cut_sentence_for_display(ui_t *ui, char *sentence)
             array_size++;
         }
     }
+    if (prev_stop == -1)
+        prev_stop = 0;
+    ui->sentence_arr = my_realloc(ui->sentence_arr, array_size * sizeof(char *));
+    ui->sentence_arr[array_size - 1] = strdup(&sentence[prev_stop]);
 }
 
 void print_sentence(player_t *player, ui_t *ui)
 {
-    mvprintw(ui->row / 2 - 1, (ui->col - strlen(ui->sentence_arr[player->current_row[0]])) / 2, "%s", ui->sentence_arr[player->current_row[0]]);
+    mvprintw(ui->row / 2 - 1, (ui->col - strlen(ui->sentence_arr[player->current_row[0]])) / 2,
+             "%s", ui->sentence_arr[player->current_row[0]]);
     if (ui->sentence_arr[player->current_row[1]] != NULL)
-        mvprintw(ui->row / 2, (ui->col - strlen(ui->sentence_arr[player->current_row[1]])) / 2, "%s", ui->sentence_arr[player->current_row[1]]);
+        mvprintw(ui->row / 2, (ui->col - strlen(ui->sentence_arr[player->current_row[1]])) / 2,
+                 "%s", ui->sentence_arr[player->current_row[1]]);
     if (ui->sentence_arr[player->current_row[2]] != NULL)
-        mvprintw(ui->row / 2 + 1, (ui->col - strlen(ui->sentence_arr[player->current_row[2]])) / 2, "%s", ui->sentence_arr[player->current_row[2]]);
+        mvprintw(ui->row / 2 + 1, (ui->col - strlen(ui->sentence_arr[player->current_row[2]])) / 2,
+                 "%s", ui->sentence_arr[player->current_row[2]]);
 }
 
 void my_curses(void)
@@ -89,6 +95,7 @@ void my_curses(void)
     cut_sentence_for_display(ui, ui->parser->sentence);
     player->cursor_pos[0] = ui->row / 2 - 1;
     player->cursor_pos[1] = (ui->col - strlen(ui->sentence_arr[0])) / 2;
+    ui->lenght = ui->parser->nb_word;
     while (ui->exit == false) {
         clear();
         start(player, ui);

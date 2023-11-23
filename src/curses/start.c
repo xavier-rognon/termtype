@@ -5,6 +5,13 @@
 ** start
 */
 
+/*
+** EPITECH PROJECT, 2023
+** termtype
+** File description:
+** start
+*/
+
 #include "../../include/include.h"
 #include <curses.h>
 #include <stdio.h>
@@ -20,7 +27,6 @@ void init_top_bar(ui_t *ui)
 void init_language_menu(ui_t *ui)
 {
     ui->language->language_menu = newwin(ui->row, ui->col / 3, 0, (ui->col - ui->col / 3) / 2);
-    ui->language->search = strdup("\0");
     box(ui->language->language_menu, 0, 0);
     keypad(ui->language->language_menu, true);
 }
@@ -85,28 +91,29 @@ void clean_language_menu(ui_t *ui)
 void display_language(ui_t *ui)
 {
     int i_2 = 0;
+    gamemode_language_info_t *current_type = ui->language->info[ui->language->current_type];
 
     if (ui->menu == LANGUAGE_BUTTON)
         attron(A_REVERSE);
-    mvprintw(ui->row / 5 * 2, (ui->col - strlen(ui->language->language)) / 2, "%s", ui->language->language);
+    mvprintw(ui->row / 5 * 2, (ui->col - strlen(current_type->language)) / 2, "%s", current_type->language);
     attroff(A_REVERSE);
     if (ui->menu == LANGUAGE_MENU) {
         box(ui->language->language_menu, 0, 0);
         clean_language_menu(ui);
-        for (int i = ui->language->start_showing + ui->language->search_offset;
-        i < ui->row - 4 + ui->language->start_showing + ui->language->search_offset &&
-        ui->language->language_list[i] != NULL; i++, i_2++) {
-            if (i == ui->language->current_language)
+        for (int i = current_type->start_showing + current_type->search_offset;
+        i < ui->row - 4 + current_type->start_showing + current_type->search_offset &&
+        current_type->language_list[i] != NULL; i++, i_2++) {
+            if (i == current_type->current_language)
                 wattron(ui->language->language_menu, COLOR_PAIR(3));
-            if (i == ui->language->language_highlight && ui->language->state == SEARCH)
+            if (i == current_type->language_highlight && ui->language->state == SEARCH)
                 wattron(ui->language->language_menu, A_REVERSE);
-            if (strncmp(ui->language->language_list[i],
-                        ui->language->search, strlen(ui->language->search)) == 0)
-                mvwprintw(ui->language->language_menu, i_2 + 3, 2, "%s", ui->language->language_list[i]);
+            if (current_type->search != NULL && strncmp(current_type->language_list[i],
+                        current_type->search, strlen(current_type->search)) == 0)
+                mvwprintw(ui->language->language_menu, i_2 + 3, 2, "%s", current_type->language_list[i]);
             wattroff(ui->language->language_menu, A_REVERSE);
             wattroff(ui->language->language_menu, COLOR_PAIR(3));
         }
-        mvwprintw(ui->language->language_menu, 1, 2, "> %s| ", ui->language->search);
+        mvwprintw(ui->language->language_menu, 1, 2, "> %s| ", current_type->search);
         for (int i = 1; i < ui->col / 3 - 1; i++)
             mvwprintw(ui->language->language_menu, 2, i, "—");
         if (ui->language->state == EXIT)

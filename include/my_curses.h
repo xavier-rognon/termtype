@@ -32,6 +32,11 @@ enum variant {
     XL,
 };
 
+enum type {
+    QUOTES,
+    RANDOM_WORDS,
+};
+
 enum menu_list_start {
     TOP_BAR,
     LANGUAGE_BUTTON,
@@ -70,8 +75,7 @@ typedef struct result_s {
     char **result_button;
 }result_t;
 
-typedef struct language_s {
-    WINDOW *language_menu;
+typedef struct gamemode_language_info_s {
     char *language;
     char *search;
     char **language_list;
@@ -80,7 +84,13 @@ typedef struct language_s {
     int current_language;
     int start_showing;
     int search_offset;
+}gamemode_language_info_t;
+
+typedef struct language_s {
+    WINDOW *language_menu;
+    gamemode_language_info_t **info;
     int state;
+    int current_type;
 }language_t;
 
 typedef struct ui_s {
@@ -92,6 +102,7 @@ typedef struct ui_s {
     int top_bar_highlight;
     bool exit;
     int gamemode;
+    int prev_gamemode;
     int variant;
     int menu;
     int lenght;

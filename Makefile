@@ -8,6 +8,7 @@
 SRC		=	./src/main.c													\
 \
 			./src/parser/parser_language.c									\
+			./src/parser/parser_quote.c										\
 			./src/parser/free_parser.c										\
 \
 			./src/curses/curses.c											\
@@ -43,6 +44,8 @@ SRC		=	./src/main.c													\
 			./src/utils/ncurses/display_ascii_from_file.c					\
 \
 			./src/debug/my_show_word_array.c								\
+\
+			./src/utils/json/nxjson.c										\
 
 OBJ		=	$(SRC:.c=.o)
 

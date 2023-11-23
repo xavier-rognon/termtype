@@ -36,7 +36,7 @@ void reset_result(result_t *result, int sentence_length)
     free(result->graph_point_row);
     result->graph_point_col = NULL;
     result->graph_point_row = NULL;
-    result->time_upto_word = malloc(sizeof(int) * sentence_length);
+    result->time_upto_word = malloc(sizeof(long long) * sentence_length);
     result->wpm_per_word = malloc(sizeof(int) * sentence_length);
     result->wpm_raw_per_word = malloc(sizeof(int) * sentence_length);
     result->data[NB_ERRORS] = 0;

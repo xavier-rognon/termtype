@@ -12,21 +12,22 @@
 
 void reset_test(player_t *player, ui_t *ui)
 {
-    char *language_path = my_strcat("./asset/languages/",
-                                    ui->language->language_list_json[ui->language->current_language]);
-
     clear_window(stdscr);
     clear_window(ui->result->graph);
-    free_parser(ui->parser);
-    ui->parser = parser_language(language_path, ui->lenght);
+    manage_variant(ui, player);
     player_reset_test(player, ui->parser);
     free_array(ui->sentence_arr);
     cut_sentence_for_display(ui, ui->parser->sentence);
-    free(language_path);
 }
 
-bool check_end_of_line(player_t *player, char **sentence_arr, int col)
+bool check_end_of_line(player_t *player, char **sentence_arr, char *sentence, int col)
 {
+    int current_char = player->lenght_input + player->offset + player->offset_current_line;
+
+    if (current_char >= (int)strlen(sentence)) {
+        check_alarm_g = 1;
+        return true;
+    }
     if (player->cursor_pos[1] == (int) ((col - strlen(sentence_arr[player->current_row[player->current_line - 1]])) / 2 +
         strlen(sentence_arr[player->current_row[player->current_line - 1]]) - player->offset_current_line)) {
         player->start_showing_player_input += strlen(sentence_arr[player->current_row[0]])
@@ -36,8 +37,10 @@ bool check_end_of_line(player_t *player, char **sentence_arr, int col)
         player->current_row[0]++;
         player->current_row[1]++;
         player->current_row[2]++;
-        if (sentence_arr[player->current_row[0]] == NULL)
+        if (sentence_arr[player->current_row[0]] == NULL) {
             check_alarm_g = 1;
+            return true;
+        }
         player->cursor_pos[1] = (col - strlen(sentence_arr[player->current_row[0]])) / 2;
         return true;
     }
@@ -46,6 +49,8 @@ bool check_end_of_line(player_t *player, char **sentence_arr, int col)
 
 void check_input(player_t *player, ui_t *ui)
 {
+    int current_char = player->lenght_input + player->offset + player->offset_current_line;
+
     if (player->last_input == 7) {
         if (player->cursor_pos[1] == (int) (ui->col - strlen(ui->sentence_arr[player->current_row[0]])) / 2)
             return;
@@ -62,10 +67,11 @@ void check_input(player_t *player, ui_t *ui)
         player->wrong_input[player->lenght_input] = 0;
         return;
     }
-    if (player->last_input == ui->parser->sentence[player->lenght_input + player->offset + player->offset_current_line]) {
-        player->correct_input[player->lenght_input] = ui->parser->sentence[player->lenght_input + player->offset + player->offset_current_line];
+    if (player->last_input == ui->parser->sentence[current_char]) {
+        player->correct_input[player->lenght_input] = ui->parser->sentence[current_char];
         if (player->correct_input[player->lenght_input] == ' ') {
-            ui->result->time_upto_word[ui->result->current_word] = get_time_millisecond() - ui->result->time_start_test;
+            ui->result->time_upto_word[ui->result->current_word] =
+                get_time_millisecond() - ui->result->time_start_test;
             ui->result->wpm_raw_per_word[ui->result->current_word] =
                 get_raw_wpm(ui->result, player->lenght_input);
             ui->result->wpm_per_word[ui->result->current_word] =
@@ -81,7 +87,7 @@ void check_input(player_t *player, ui_t *ui)
         ui->result->data[INCORRECT]++;
     }
     player->lenght_input++;
-    if (check_end_of_line(player, ui->sentence_arr, ui->col) == false)
+    if (check_end_of_line(player, ui->sentence_arr, ui->parser->sentence, ui->col) == false)
         player->cursor_pos[1]++;
 }
 
