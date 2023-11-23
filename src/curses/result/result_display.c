@@ -68,6 +68,28 @@ void result_button(ui_t *ui)
     attroff(A_REVERSE);
 }
 
+void display_test_info(ui_t *ui, player_t *player, int column_offset)
+{
+    char **info;
+    int current_language = ui->language->info[RANDOM_WORDS]->current_language;
+
+    if (ui->gamemode == QUOTE) {
+        info = my_str_to_word_array(ui->parser->name, "-");
+        mvprintw((ui->row / 3) * 2 + 1, column_offset, "%s-", info[0]);
+        mvprintw((ui->row / 3) * 2 + 2, column_offset, "%s", ++info[1]);
+        --info[1];
+        free_array(info);
+    }
+    if (ui->gamemode == TIME) {
+        mvprintw((ui->row / 3) * 2 + 1, column_offset, "%s -", ui->language->info[RANDOM_WORDS]->language_list[current_language]);
+        mvprintw((ui->row / 3) * 2 + 2, column_offset, "time %ds", player->playtime);
+    }
+    if (ui->gamemode == WORD) {
+        mvprintw((ui->row / 3) * 2 + 1, column_offset, "%s -", ui->language->info[RANDOM_WORDS]->language_list[current_language]);
+        mvprintw((ui->row / 3) * 2 + 2, column_offset, "words %d", ui->lenght);
+    }
+}
+
 void display_stat(ui_t *ui)
 {
     int column_offset = ui->col / 4 + ui->col / 16;
@@ -101,6 +123,7 @@ void display_result(ui_t *ui, player_t *player)
     if (player->state != RESULT)
         return;
     display_stat(ui);
+    display_test_info(ui, player, ui->col / 4 - ui->col / 16);
     analyze_input_result(ui, player);
 }
 

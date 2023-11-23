@@ -34,8 +34,10 @@ void input_top_bar(ui_t *ui, player_t *player, int input)
 void input_language_button(ui_t *ui, player_t *player, int input)
 {
     player = player;
-    if (input == '\n')
+    if (input == '\n') {
         ui->menu = LANGUAGE_MENU;
+        ui->language->state = SEARCH;
+    }
     if (input == '\t')
         ui->menu = START_BUTTON;
 }

@@ -37,11 +37,9 @@ bool check_end_of_line(player_t *player, char **sentence_arr, char *sentence, in
         player->current_row[0]++;
         player->current_row[1]++;
         player->current_row[2]++;
-        if (sentence_arr[player->current_row[0]] == NULL) {
-            check_alarm_g = 1;
-            return true;
-        }
         player->cursor_pos[1] = (col - strlen(sentence_arr[player->current_row[0]])) / 2;
+        if (sentence_arr[player->current_row[1]] == NULL)
+            player->cursor_pos[1]++;
         return true;
     }
     return false;
@@ -94,17 +92,20 @@ void check_input(player_t *player, ui_t *ui)
 void print_player_input(player_t *player, char **sentence_arr, int col, int row)
 {
     int i_clean = 0;
+    int last_line_offset = 0;
 
+    if (sentence_arr[player->current_row[1]] == NULL && my_arrlen(sentence_arr) != 1)
+        last_line_offset++;
     for (int i = player->start_showing_player_input; i <= player->lenght_input; i++, i_clean++) {
         if (player->correct_input[i] != 0) {
             attron(COLOR_PAIR(2));
             check_special_character(row / 2 - 1, (col - strlen(sentence_arr[player->current_row[0]])) / 2 +
-                                    i_clean, player->correct_input[i]);
+                                    i_clean + last_line_offset, player->correct_input[i]);
             attroff(COLOR_PAIR(2));
         } else {
             attron(COLOR_PAIR(1));
             check_special_character(row / 2 - 1, (col - strlen(sentence_arr[player->current_row[0]])) / 2 +
-                                    i_clean, player->wrong_input[i]);
+                                    i_clean + last_line_offset, player->wrong_input[i]);
             attroff(COLOR_PAIR(1));
         }
     }
@@ -113,10 +114,10 @@ void print_player_input(player_t *player, char **sentence_arr, int col, int row)
 void print_info_test(player_t *player, ui_t *ui)
 {
     if (ui->gamemode == TIME)
-        mvprintw(ui->row / 2 - 2, ui->col / 6,
+        mvprintw(ui->row / 2 - 2, player->pos_start_first_line,
                  "%lld", player->playtime + (ui->result->time_start_test - get_time_millisecond()) / 1000);
     else
-        mvprintw(ui->row / 2 - 2, ui->col / 6,
+        mvprintw(ui->row / 2 - 2, player->pos_start_first_line,
                  "%d/%d", ui->result->current_word, ui->lenght);
 }
 

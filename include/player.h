@@ -25,6 +25,7 @@ typedef struct player_s {
     int playtime;
     int offset;
     int offset_current_line;
+    int pos_start_first_line;
 }player_t;
 
 player_t *player_init(parser_t *parser);

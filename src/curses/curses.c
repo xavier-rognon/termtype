@@ -95,6 +95,7 @@ void my_curses(void)
     cut_sentence_for_display(ui, ui->parser->sentence);
     player->cursor_pos[0] = ui->row / 2 - 1;
     player->cursor_pos[1] = (ui->col - strlen(ui->sentence_arr[0])) / 2;
+    player->pos_start_first_line = (ui->col - strlen(ui->sentence_arr[0])) / 2;
     ui->lenght = ui->parser->nb_word;
     while (ui->exit == false) {
         clear();
